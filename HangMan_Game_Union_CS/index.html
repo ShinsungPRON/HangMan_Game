@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        #game-container {
+            margin-top: 50px;
+        }
+        #hidden-word {
+            font-size: 2rem;
+            letter-spacing: 10px;
+        }
+        #message {
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+        #hangman-stage {
+            font-family: monospace;
+            white-space: pre;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            width: 50px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin: 10px;
+            cursor: pointer;
+        }
+        #tries {
+            color: red;
+            font-weight: bold;
+        }
+        .guessed {
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+        .guessed span {
+            margin: 0 5px;
+            font-weight: bold;
+        }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
+        .duplicate {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Hangman Game</h1>
+        <div id="hangman-stage"> 
+            <pre>
+      +---+
+      |   |
+      O   |
+     /|\  |
+     / \  |
+          |
+    =========
+            </pre>
+        </div>
+        <p id="hidden-word">_ _ _ _ _ _</p>
+        <p>Tries left: <span id="tries">6</span></p>
+        <input type="text" id="guess-input" maxlength="1" placeholder="A">
+        <button onclick="makeGuess()">Guess</button>
+        <p id="message"></p>
+        <div class="guessed" id="guessed-letters">Guessed Letters:</div>
+    </div>
+
+    <script>
+        const words = ['shinsung', 'pron', 'highschool', 'hungry', 'thirsty', 'hangman', 'hello', 'goodbye'];
+        const hangmanStages = [
+            `<pre>
+      +---+
+      |   |
+          |
+          |
+          |
+          |
+    =========
+            </pre>`,
+            `<pre>
+      +---+
+      |   |
+      O   |
+          |
+          |
+          |
+    =========
+            </pre>`,
+            `<pre>
+      +---+
+      |   |
+      O   |
+      |   |
+          |
+          |
+    =========
+            </pre>`,
+            `<pre>
+      +---+
+      |   |
+      O   |
+     /|   |
+          |
+          |
+    =========
+            </pre>`,
+            `<pre>
+      +---+
+      |   |
+      O   |
+     /|\  |
+          |
+          |
+    =========
+            </pre>`,
+            `<pre>
+      +---+
+      |   |
+      O   |
+     /|\  |
+     /    |
+          |
+    =========
+            </pre>`,
+            `<pre>
+      +---+
+      |   |
+      O   |
+     /|\  |
+     / \  |
+          |
+    =========
+            </pre>`
+        ];
+
+        let wordRandom = words[Math.floor(Math.random() * words.length)];
+        let hiddenWord = "_".repeat(wordRandom.length).split("");
+        let tries = 6;
+        let guessedLetters = [];
+
+        document.getElementById('hidden-word').textContent = hiddenWord.join(" ");
+
+        function updateHangmanStage() {
+            document.getElementById('hangman-stage').innerHTML = hangmanStages[6 - tries];
+        }
+
+        function makeGuess() {
+            const guessInput = document.getElementById('guess-input');
+            const guess = guessInput.value.toLowerCase();
+            guessInput.value = "";
+
+            const guessedContainer = document.getElementById('guessed-letters');
+            const message = document.getElementById('message');
+
+            if (!guess || guessedLetters.includes(guess)) {
+                message.textContent = "You've already guessed that letter!";
+                message.style.color = "gray";
+                guessedContainer.innerHTML += `<span class="duplicate">${guess}</span>`;
+                return;
+            }
+
+            guessedLetters.push(guess);
+
+            if (wordRandom.includes(guess)) {
+                message.textContent = "Good job!";
+                message.style.color = "green";
+                for (let i = 0; i < wordRandom.length; i++) {
+                    if (wordRandom[i] === guess) {
+                        hiddenWord[i] = guess;
+                    }
+                }
+                document.getElementById('hidden-word').textContent = hiddenWord.join(" ");
+                guessedContainer.innerHTML += `<span class="correct">${guess}</span>`;
+            } else {
+                message.textContent = "Wrong guess!";
+                message.style.color = "red";
+                tries--;
+                document.getElementById('tries').textContent = tries;
+                updateHangmanStage();
+                guessedContainer.innerHTML += `<span class="wrong">${guess}</span>`;
+            }
+
+            if (hiddenWord.join("") === wordRandom) {
+                message.textContent = "Congratulations! You guessed the word!";
+                message.style.color = "green";
+                document.getElementById('guess-input').disabled = true;
+            }
+
+            if (tries === 0) {
+                message.textContent = `Game over! The word was "${wordRandom}".`;
+                message.style.color = "red";
+                document.getElementById('guess-input').disabled = true;
+            }
+        }
+    </script>
+<p style="font-weight: bold; margin-top: 30px;">Developed by union-cs</p>
+</body>
+</html>
