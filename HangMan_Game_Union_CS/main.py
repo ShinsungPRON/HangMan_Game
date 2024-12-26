@@ -5,7 +5,7 @@ import random # random 라이브러리를 import한다.
 
 print("Developer : union-cs")
 
-words = ['shinsung', 'pron', 'highschool', 'hungry', 'haesoo', 'hangman'] # words라는 리스트에 단어들을 채워넣는다.
+words = ['shinsung', 'pron', 'highschool', 'hungry', 'thirsty', 'hangman', 'hello', 'goodbye'] # words라는 리스트에 단어들을 채워넣는다.
 
 word_random = random.choice(words) # 리스트에 있는 단어 중 하나를 랜덤으로 골라낸다.
 guessed_word = [] # 입력한 글자들을 저장하는 리스트를 만든다.
